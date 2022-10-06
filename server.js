@@ -66,7 +66,7 @@ io.on('connection', async (socket)=>{
     socket.on('from-client-message', async mensaje => {
         await cajaMensajes.save(mensaje)
         const MENSAJES = await listarMensajesNormalizados()
-        io.sockets.emit('from-server-message', {MENSAJES})
+        io.sockets.emit('from-server-message', MENSAJES)
     })
 
     socket.on('from-client-product', async product => {
@@ -90,7 +90,7 @@ async function listarMensajesNormalizados () {
     console.log(`Los mensajes sin normalizar: ${JSON.stringify(mensajes).length}`) 
     const normalizados = normalizarMensajes ({id: 'mensajes', mensajes})
     let mensajesDenorm = denormalize(normalizados.result, schemaMensajes, normalizados.entities);
-    console.log(mensajesDenorm);
+    print(mensajesDenorm);
     //console.log(`Los mensajes normalizados: ${JSON.stringify(normalizados).length}`) 
     print(normalizados)
     return normalizados
