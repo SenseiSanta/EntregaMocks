@@ -46,7 +46,7 @@ export class ContenedorFirebase {
     async save(obj) {
         try {
             let doc = this.coleccion.doc();
-            await doc.create(obj);
+            await doc.create({...obj,id: doc.id});
         } catch (error) {
             console.log(error)
             return {error: 'El objeto no se ha guardado'}

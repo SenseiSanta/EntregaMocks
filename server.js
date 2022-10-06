@@ -6,7 +6,6 @@ import morgan from 'morgan';
 import util from 'util'
 import { ContenedorSQLite } from './src/container/ContenedorSQLite.js';
 import { ContenedorFirebase } from "./src/container/ContenedorFirebase.js";
-import { productoMock } from './src/mocks/producto.mock.js';
 import { Server as HttpServer } from 'http';
 import { Server as IOServer }  from 'socket.io';
 
@@ -66,11 +65,9 @@ io.on('connection', async (socket)=>{
     
     socket.on('from-client-message', async mensaje => {
         await cajaMensajes.save(mensaje)
-        const MENSAJES = await cajaMensajes.getAll()
+        const MENSAJES = await listarMensajesNormalizados()
         io.sockets.emit('from-server-message', {MENSAJES})
     })
-
-    //socket.emit('mensajes', await listarMensajesNormalizados())
 
     socket.on('from-client-product', async product => {
         await cajaProducto.insertar(product)
@@ -80,20 +77,21 @@ io.on('connection', async (socket)=>{
 })
 
 /*=============== Normalizacion de datos ===============*/
-import { normalize, schema } from 'normalizr';
+import { normalize, schema, denormalize } from 'normalizr';
 
-const schemaAuthors = new schema.Entity('authors', {}, {idAttribute: 'email'})
-const schemaMensaje = new schema.Entity('post', {author: schemaAuthors})
+const schemaAuthors = new schema.Entity('author', {}, {idAttribute: 'email'})
+const schemaMensaje = new schema.Entity('post', {author: schemaAuthors}, {idAttribute: 'id'})
 const schemaMensajes = new schema.Entity('posts', {mensajes: [schemaMensaje]}, {idAttribute: 'id'})
 
 const normalizarMensajes = (mensajesConId) => normalize(mensajesConId, schemaMensajes)
 
 async function listarMensajesNormalizados () {
     const mensajes = await cajaMensajes.getAll()
-    console.log(mensajes)
     console.log(`Los mensajes sin normalizar: ${JSON.stringify(mensajes).length}`) 
     const normalizados = normalizarMensajes ({id: 'mensajes', mensajes})
-    console.log(`Los mensajes normalizados: ${JSON.stringify(normalizados).length}`) 
+    let mensajesDenorm = denormalize(normalizados.result, schemaMensajes, normalizados.entities);
+    console.log(mensajesDenorm);
+    //console.log(`Los mensajes normalizados: ${JSON.stringify(normalizados).length}`) 
     print(normalizados)
     return normalizados
 }

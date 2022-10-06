@@ -13,12 +13,24 @@
     {{{body}}}
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
     <script>
+
+        const schemaAuthors = new normalizr.schema.Entity('author', {}, {idAttribute: 'email'})
+        const schemaMensaje = new normalizr.schema.Entity('post', {author: schemaAuthors}, {idAttribute: 'id'})
+        const schemaMensajes = new normalizr.schema.Entity('posts', {mensajes: [schemaMensaje]}, {idAttribute: 'id'})
+
         const socket = io();
 
-        socket.on('from-server-message', mensajes =>{
-            console.log(mensajes)
-            renderMessages(mensajes)
+        socket.on('from-server-message', messages =>{
+            let mensajesNormSIZE = JSON.stringify(messages).length;
+            let mensajesDenorm = normalizr.denormalize(messages.result, schemaMensajes, messages.entities);
+            console.log(mensajesDenorm);
+            let mensajesDenormSIZE = JSON.stringify(mensajesDenorm).length;
+            let compresion = parseInt((mensajesNormSIZE * 100) / mensajesDenormSIZE );
+
+            document.getElementById('compresionText').innerText = 'Compresion ' + compresion + '%'
+            //renderMessages(mensajesDenorm)
         })
 
         function renderMessages(mensajes) {

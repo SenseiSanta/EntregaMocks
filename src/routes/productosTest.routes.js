@@ -10,7 +10,7 @@ const caja = new productoMock();
 routerProductosTest.get('/', (req, res) => {
     let PRODUCTOS = caja.generarDatos()
     console.log(PRODUCTOS)
-    res.render('productos-test', PRODUCTO)
+    res.render('productos-test')
 })
 
 /* ============= Error de Routing ============= */
