@@ -1,0 +1,30 @@
+{
+  "type": "module",
+  "name": "7-entregabasededatos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node src/batch/createTables.js"
+  },
+  "author": "Santiago Olivera",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^7.6.2",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-handlebars": "^6.0.6",
+    "faker": "^6.6.6",
+    "firebase": "^9.10.0",
+    "firebase-admin": "^11.0.1",
+    "knex": "^2.3.0",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "normalizr": "^3.6.2",
+    "socket.io": "^4.5.1"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.5.0"
+  }
+}
