@@ -37,7 +37,7 @@
             function renderMessages(mensajes) { /*=============== Renderizado de mensajes ===============*/
                 const cuerpoMensaje = mensajes.map(msg => {
                     return `<span> <span style="color: blue; font-weight: bold">${msg.author.email}</span>
-                            <span style="color: brown"> ${msg.author.date}</span>
+                            <span style="color: brown"> ${msg.date}</span>
                             :
                             <span style="color: green; font-style: italic">${msg.text}</span></span>`
                 }).join('')
@@ -63,14 +63,14 @@
             const msj = {
                 author: {
                     email: inputEmail.value,
-                    date: fecha,
                     nombre: inputName.value,
                     apellido: inputLastname.value,
                     edad: inputAge.value,
                     alias: inputAlias.value,
                     avatar: inputAvatar.value
                 },
-                text: inputMsg.value
+                text: inputMsg.value,
+                date: fecha
             }
             socket.emit('from-client-message', msj);
         }                  
